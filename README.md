@@ -8,8 +8,7 @@ bundle your files into LBF Module format
 npm:
 
 ```
-  npm install lbf-webpack-plugin --save
-
+npm install lbf-webpack-plugin --save-dev
 ```
 
 ## Usage
@@ -17,10 +16,9 @@ npm:
 webpack.config.js
 
 ```
-var LbfWebpackPlugin = require('lbf-webpack-plugin');
+import LbfWebpackPlugin from 'lbf-webpack-plugin';
 
-module.exports = {
-
+export default {
   output: {
 
     // ..
@@ -36,5 +34,4 @@ module.exports = {
     })
   ]
 }
-
 ```
