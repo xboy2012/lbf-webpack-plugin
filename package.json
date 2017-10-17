@@ -1,14 +1,39 @@
 {
   "name": "lbf-webpack-plugin",
-  "version": "0.0.1",
-  "description": "将webpack生成的文件转换成LBF模块文件。",
-  "main": "index.js",
+  "version": "0.0.2",
+  "description": "bundle your files into LBF Module format.",
+  "main": "dist/index.es5.js",
+  "module": "dist/index.es6.js",
+  "jsnext:main": "dist/index.es6.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp"
   },
   "dependencies": {
     "webpack": "^3.7.1"
   },
   "author": "xboy2012<xboy2008@live.cn>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xboy2012/lbf-webpack-plugin"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-helper-modules": "^6.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-remove-strict-mode": "0.0.2",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp": "^3.9.1",
+    "rollup": "^0.50.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-remove-strict-mode",
+      "transform-object-rest-spread"
+    ]
+  }
 }

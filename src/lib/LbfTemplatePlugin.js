@@ -1,7 +1,7 @@
 /**
  * @description   LBF template plugin
  */
-var ConcatSource = require("webpack-sources/lib/ConcatSource");
+import ConcatSource from "webpack-sources/lib/ConcatSource";
 
 var lbfTemplatePlugin = function(name) {
   this.name = name;
@@ -62,4 +62,4 @@ lbfTemplatePlugin.prototype.apply = function(compilation) {
 };
 
 
-module.exports = lbfTemplatePlugin;
+export default lbfTemplatePlugin;

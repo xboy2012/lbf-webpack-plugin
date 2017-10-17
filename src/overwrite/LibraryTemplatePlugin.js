@@ -1,21 +1,19 @@
 /**
  * @description   rewrite LibraryTemplatePlugin.Apply()
  */
-var LibraryTemplatePlugin = require("webpack/lib/LibraryTemplatePlugin"),
+import LibraryTemplatePlugin from "webpack/lib/LibraryTemplatePlugin";
+import LbfTemplatePlugin from '../lib/LbfTemplatePlugin';
 
-  origin = LibraryTemplatePlugin.prototype.apply,
+let origin = LibraryTemplatePlugin.prototype.apply;
 
-  lbfTemplatePlugin = require('../lib/lbfTemplatePlugin');
-
-
-exports.apply = function({name}) {
+export default function({name}) {
   LibraryTemplatePlugin.prototype.apply = function overwrite(compiler) {
       var me = this;
 
       // TODO:To add amd libraryTarget
       if (me.target === 'amd') {
           compiler.plugin("this-compilation", function(compilation) {
-              compilation.apply(new lbfTemplatePlugin(name));
+              compilation.apply(new LbfTemplatePlugin(name));
           });
           return;
       }

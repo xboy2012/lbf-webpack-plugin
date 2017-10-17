@@ -1,9 +1,9 @@
 # lbf-webpack-plugin
 
-将webpack打包生成的文件转换成LBF模块文件。
+bundle your files into LBF Module format
 
 
-**安装：**
+## Install
 
 npm:
 
@@ -12,15 +12,12 @@ npm:
 
 ```
 
-
-**使用:**
+## Usage
 
 webpack.config.js
 
 ```
-
 var LbfWebpackPlugin = require('lbf-webpack-plugin');
-
 
 module.exports = {
 
@@ -32,10 +29,10 @@ module.exports = {
 
   },
 
-  // 插件
+  // plugins
   plugins: [
     new LbfWebpackPlugin({
-        name: 'qidian.comp.mymodule'
+        name: 'qidian.comp.mymodule'    //the export name you wanna use as the output LBF module name
     })
   ]
 }
