@@ -4,6 +4,7 @@ import RawSource from 'webpack-sources/lib/RawSource';
 import WebpackMissingModule from 'webpack/lib/dependencies/WebpackMissingModule';
 import LibraryTemplatePlugin from 'webpack/lib/LibraryTemplatePlugin';
 import ConcatSource from 'webpack-sources/lib/ConcatSource';
+import isLbfModule from 'is-lbf-module';
 
 /**
  * @description   rewrite ExternalModuleSoucePlugin.Apply()
@@ -142,21 +143,31 @@ const overwrites = [
     LibraryTemplatePlugin$1
 ];
 
-var LbfWebpackPlugin = function({name}){
-    this.name = name;
-};
+class LbfWebpackPlugin {
+    constructor(name) {
+        this.name = name;
+    }
+    apply(compiler) {
+        let name = this.name;
+        // 应用重写
+        overwrites.forEach((item) => {
+            item({name});
+        });
 
+        compiler.plugin('normal-module-factory', function(nmf) {
 
-/**
- * 将重写的方法应用到webpack上
- */
-LbfWebpackPlugin.prototype.apply = function() {
+            nmf.plugin("resolver", function (next) {
+                return function (data, callback) {
+                    let req = data.request;
+                    if(isLbfModule(req)) {
+                        return callback(null, new ExternalModule$1(req, 'commonjs'));
+                    }
+                    return next(data, callback);
+                }
+            });
+        });
 
-    var name = this.name;
-    // 应用重写
-    overwrites.forEach(function (item) {
-        item({name});
-    });
-};
+    }
+}
 
 export default LbfWebpackPlugin;

@@ -2,6 +2,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _ExternalModule = require('webpack/lib/ExternalModule');
 
 var _ExternalModule2 = _interopRequireDefault(_ExternalModule);
@@ -26,7 +28,13 @@ var _ConcatSource = require('webpack-sources/lib/ConcatSource');
 
 var _ConcatSource2 = _interopRequireDefault(_ConcatSource);
 
+var _isLbfModule = require('is-lbf-module');
+
+var _isLbfModule2 = _interopRequireDefault(_isLbfModule);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -165,22 +173,38 @@ var LibraryTemplatePlugin$1 = function LibraryTemplatePlugin$1(_ref) {
 
 var overwrites = [ExternalModule$1, LibraryTemplatePlugin$1];
 
-var LbfWebpackPlugin = function LbfWebpackPlugin(_ref2) {
-    var name = _ref2.name;
+var LbfWebpackPlugin = function () {
+    function LbfWebpackPlugin(name) {
+        _classCallCheck(this, LbfWebpackPlugin);
 
-    this.name = name;
-};
+        this.name = name;
+    }
 
-/**
- * 将重写的方法应用到webpack上
- */
-LbfWebpackPlugin.prototype.apply = function () {
+    _createClass(LbfWebpackPlugin, [{
+        key: 'apply',
+        value: function apply(compiler) {
+            var name = this.name;
+            // 应用重写
+            overwrites.forEach(function (item) {
+                item({ name: name });
+            });
 
-    var name = this.name;
-    // 应用重写
-    overwrites.forEach(function (item) {
-        item({ name: name });
-    });
-};
+            compiler.plugin('normal-module-factory', function (nmf) {
+
+                nmf.plugin("resolver", function (next) {
+                    return function (data, callback) {
+                        var req = data.request;
+                        if ((0, _isLbfModule2.default)(req)) {
+                            return callback(null, new ExternalModule$1(req, 'commonjs'));
+                        }
+                        return next(data, callback);
+                    };
+                });
+            });
+        }
+    }]);
+
+    return LbfWebpackPlugin;
+}();
 
 module.exports = LbfWebpackPlugin;

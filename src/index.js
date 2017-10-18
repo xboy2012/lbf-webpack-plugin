@@ -7,27 +7,38 @@
 import ExternalModule from './overwrite/ExternalModule';
 import LibraryTemplatePlugin from './overwrite/LibraryTemplatePlugin';
 
+import isLbfModule from 'is-lbf-module';
+
 const overwrites = [
     ExternalModule,
     LibraryTemplatePlugin
 ];
 
-var LbfWebpackPlugin = function({name}){
-    this.name = name;
-};
+class LbfWebpackPlugin {
+    constructor(name) {
+        this.name = name;
+    }
+    apply(compiler) {
+        let name = this.name;
+        // 应用重写
+        overwrites.forEach((item) => {
+            item({name});
+        });
 
+        compiler.plugin('normal-module-factory', function(nmf) {
 
-/**
- * 将重写的方法应用到webpack上
- */
-LbfWebpackPlugin.prototype.apply = function() {
+            nmf.plugin("resolver", function (next) {
+                return function (data, callback) {
+                    let req = data.request;
+                    if(isLbfModule(req)) {
+                        return callback(null, new ExternalModule(req, 'commonjs'));
+                    }
+                    return next(data, callback);
+                }
+            });
+        });
 
-    var name = this.name;
-    // 应用重写
-    overwrites.forEach(function (item) {
-        item({name});
-    });
-};
-
+    }
+}
 
 export default LbfWebpackPlugin;

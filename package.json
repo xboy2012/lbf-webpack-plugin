@@ -1,6 +1,6 @@
 {
   "name": "lbf-webpack-plugin",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "bundle your files into LBF Module format.",
   "main": "dist/index.es5.js",
   "module": "dist/index.es6.js",
@@ -9,6 +9,7 @@
     "build": "gulp"
   },
   "dependencies": {
+    "is-lbf-module": "^1.0.0",
     "webpack": "^3.7.1"
   },
   "author": "xboy2012<xboy2008@live.cn>",
