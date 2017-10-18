@@ -4,22 +4,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ExternalModule = require('webpack/lib/ExternalModule');
-
-var _ExternalModule2 = _interopRequireDefault(_ExternalModule);
-
-var _OriginalSource = require('webpack-sources/lib/OriginalSource');
-
-var _OriginalSource2 = _interopRequireDefault(_OriginalSource);
-
-var _RawSource = require('webpack-sources/lib/RawSource');
-
-var _RawSource2 = _interopRequireDefault(_RawSource);
-
-var _WebpackMissingModule = require('webpack/lib/dependencies/WebpackMissingModule');
-
-var _WebpackMissingModule2 = _interopRequireDefault(_WebpackMissingModule);
-
 var _LibraryTemplatePlugin = require('webpack/lib/LibraryTemplatePlugin');
 
 var _LibraryTemplatePlugin2 = _interopRequireDefault(_LibraryTemplatePlugin);
@@ -32,46 +16,15 @@ var _isLbfModule = require('is-lbf-module');
 
 var _isLbfModule2 = _interopRequireDefault(_isLbfModule);
 
+var _ExternalModule = require('webpack/lib/ExternalModule');
+
+var _ExternalModule2 = _interopRequireDefault(_ExternalModule);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-/**
- * @description   rewrite ExternalModuleSoucePlugin.Apply()
- */
-
-var origin = _ExternalModule2.default.prototype.source;
-
-var ExternalModule_overwrite = function ExternalModule_overwrite() {
-    _ExternalModule2.default.prototype.source = overwrite;
-};
-
-/**
- * rewrite
- */
-function overwrite() {
-    var me = this;
-
-    return me.type === 'amd' ? buildLBFExternalModuleSource.call(me) : origin.apply(me, arguments);
-}
-
-/**
- * export lbf External module source
- */
-function buildLBFExternalModuleSource() {
-    var me = this,
-        code;
-
-    if (me.optional) {
-        code = "if(typeof __WEBPACK_EXTERNAL_MODULE_" + me.id + "__ === 'undefined') {" + _WebpackMissingModule2.default.moduleCode(request) + "}\n";
-    }
-
-    code = "module.exports = __WEBPACK_EXTERNAL_MODULE_" + me.id + "__;";
-
-    return me.useSourceMap ? new _OriginalSource2.default(code, me.identifier()) : new _RawSource2.default(code);
-}
 
 /**
  * @description   LBF template plugin
@@ -145,7 +98,7 @@ lbfTemplatePlugin.prototype.apply = function (compilation) {
 /**
  * @description   rewrite LibraryTemplatePlugin.Apply()
  */
-var origin$1 = _LibraryTemplatePlugin2.default.prototype.apply;
+var origin = _LibraryTemplatePlugin2.default.prototype.apply;
 
 var LibraryTemplatePlugin_overwrite = function LibraryTemplatePlugin_overwrite(_ref) {
     var name = _ref.name;
@@ -162,11 +115,11 @@ var LibraryTemplatePlugin_overwrite = function LibraryTemplatePlugin_overwrite(_
         }
 
         // If not lbf, use origin
-        origin$1.apply(me, arguments);
+        origin.apply(me, arguments);
     };
 };
 
-var overwrites = [ExternalModule_overwrite, LibraryTemplatePlugin_overwrite];
+var overwrites = [LibraryTemplatePlugin_overwrite];
 
 var LbfWebpackPlugin = function () {
     function LbfWebpackPlugin(_ref2) {

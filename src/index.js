@@ -1,9 +1,7 @@
-import ExternalModule_overwrite from './overwrite/ExternalModule';
 import LibraryTemplatePlugin_overwrite from './overwrite/LibraryTemplatePlugin';
 import isLbfModule from 'is-lbf-module';
 import ExternalModule from 'webpack/lib/ExternalModule';
 const overwrites = [
-    ExternalModule_overwrite,
     LibraryTemplatePlugin_overwrite
 ];
 

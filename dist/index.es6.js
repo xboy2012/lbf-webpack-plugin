@@ -1,52 +1,7 @@
-import ExternalModule from 'webpack/lib/ExternalModule';
-import OriginalSource from 'webpack-sources/lib/OriginalSource';
-import RawSource from 'webpack-sources/lib/RawSource';
-import WebpackMissingModule from 'webpack/lib/dependencies/WebpackMissingModule';
 import LibraryTemplatePlugin from 'webpack/lib/LibraryTemplatePlugin';
 import ConcatSource from 'webpack-sources/lib/ConcatSource';
 import isLbfModule from 'is-lbf-module';
-
-/**
- * @description   rewrite ExternalModuleSoucePlugin.Apply()
- */
-
-let origin = ExternalModule.prototype.source;
-
-
-var ExternalModule_overwrite = function () {
-    ExternalModule.prototype.source = overwrite;
-};
-
-
-/**
- * rewrite
- */
-function overwrite() {
-    var me = this;
-
-    return me.type === 'amd' ?
-        buildLBFExternalModuleSource.call(me) :
-        origin.apply(me, arguments);
-}
-
-
-/**
- * export lbf External module source
- */
-function buildLBFExternalModuleSource() {
-    var me = this,
-        code;
-
-    if (me.optional) {
-        code = "if(typeof __WEBPACK_EXTERNAL_MODULE_" + me.id + "__ === 'undefined') {" + WebpackMissingModule.moduleCode(request) + "}\n";
-    }
-
-    code = "module.exports = __WEBPACK_EXTERNAL_MODULE_" + me.id + "__;";
-
-    return me.useSourceMap ?
-        new OriginalSource(code, me.identifier()) :
-        new RawSource(code);
-}
+import ExternalModule from 'webpack/lib/ExternalModule';
 
 /**
  * @description   LBF template plugin
@@ -112,7 +67,7 @@ lbfTemplatePlugin.prototype.apply = function(compilation) {
 /**
  * @description   rewrite LibraryTemplatePlugin.Apply()
  */
-let origin$1 = LibraryTemplatePlugin.prototype.apply;
+let origin = LibraryTemplatePlugin.prototype.apply;
 
 var LibraryTemplatePlugin_overwrite = function({name}) {
   LibraryTemplatePlugin.prototype.apply = function overwrite(compiler) {
@@ -127,13 +82,12 @@ var LibraryTemplatePlugin_overwrite = function({name}) {
       }
 
       // If not lbf, use origin
-      origin$1.apply(me, arguments);
+      origin.apply(me, arguments);
   };
 
 };
 
 const overwrites = [
-    ExternalModule_overwrite,
     LibraryTemplatePlugin_overwrite
 ];
 
