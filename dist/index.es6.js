@@ -13,7 +13,7 @@ import isLbfModule from 'is-lbf-module';
 let origin = ExternalModule.prototype.source;
 
 
-var ExternalModule$1 = function () {
+var ExternalModule_overwrite = function () {
     ExternalModule.prototype.source = overwrite;
 };
 
@@ -114,7 +114,7 @@ lbfTemplatePlugin.prototype.apply = function(compilation) {
  */
 let origin$1 = LibraryTemplatePlugin.prototype.apply;
 
-var LibraryTemplatePlugin$1 = function({name}) {
+var LibraryTemplatePlugin_overwrite = function({name}) {
   LibraryTemplatePlugin.prototype.apply = function overwrite(compiler) {
       var me = this;
 
@@ -132,42 +132,36 @@ var LibraryTemplatePlugin$1 = function({name}) {
 
 };
 
-/**
- * @description   采用重写的方法
- *                将webpack打包生成的文件转换成LBF模块文件。
- */
-
-
 const overwrites = [
-    ExternalModule$1,
-    LibraryTemplatePlugin$1
+    ExternalModule_overwrite,
+    LibraryTemplatePlugin_overwrite
 ];
 
 class LbfWebpackPlugin {
-    constructor(name) {
+    constructor({name}){
         this.name = name;
     }
     apply(compiler) {
         let name = this.name;
         // 应用重写
-        overwrites.forEach((item) => {
+        overwrites.forEach((item)=> {
             item({name});
         });
 
-        compiler.plugin('normal-module-factory', function(nmf) {
+        compiler.plugin('normal-module-factory', (nmf) => {
 
-            nmf.plugin("resolver", function (next) {
-                return function (data, callback) {
+            nmf.plugin("resolver", (next) => {
+                return (data, callback) => {
                     let req = data.request;
                     if(isLbfModule(req)) {
-                        return callback(null, new ExternalModule$1(req, 'commonjs'));
+                        console.warn(`You are using a LBF Module[${req}], consider use commonjs/ES6 instead for better development.`);
+                        return callback(null, new ExternalModule(req, 'commonjs'));
                     }
                     return next(data, callback);
                 }
             });
         });
-
-    }
+    };
 }
 
 export default LbfWebpackPlugin;

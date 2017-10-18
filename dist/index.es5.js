@@ -44,7 +44,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var origin = _ExternalModule2.default.prototype.source;
 
-var ExternalModule$1 = function ExternalModule$1() {
+var ExternalModule_overwrite = function ExternalModule_overwrite() {
     _ExternalModule2.default.prototype.source = overwrite;
 };
 
@@ -147,7 +147,7 @@ lbfTemplatePlugin.prototype.apply = function (compilation) {
  */
 var origin$1 = _LibraryTemplatePlugin2.default.prototype.apply;
 
-var LibraryTemplatePlugin$1 = function LibraryTemplatePlugin$1(_ref) {
+var LibraryTemplatePlugin_overwrite = function LibraryTemplatePlugin_overwrite(_ref) {
     var name = _ref.name;
 
     _LibraryTemplatePlugin2.default.prototype.apply = function overwrite(compiler) {
@@ -166,15 +166,12 @@ var LibraryTemplatePlugin$1 = function LibraryTemplatePlugin$1(_ref) {
     };
 };
 
-/**
- * @description   采用重写的方法
- *                将webpack打包生成的文件转换成LBF模块文件。
- */
-
-var overwrites = [ExternalModule$1, LibraryTemplatePlugin$1];
+var overwrites = [ExternalModule_overwrite, LibraryTemplatePlugin_overwrite];
 
 var LbfWebpackPlugin = function () {
-    function LbfWebpackPlugin(name) {
+    function LbfWebpackPlugin(_ref2) {
+        var name = _ref2.name;
+
         _classCallCheck(this, LbfWebpackPlugin);
 
         this.name = name;
@@ -195,7 +192,8 @@ var LbfWebpackPlugin = function () {
                     return function (data, callback) {
                         var req = data.request;
                         if ((0, _isLbfModule2.default)(req)) {
-                            return callback(null, new ExternalModule$1(req, 'commonjs'));
+                            console.warn('You are using a LBF Module[' + req + '], consider use commonjs/ES6 instead for better development.');
+                            return callback(null, new _ExternalModule2.default(req, 'commonjs'));
                         }
                         return next(data, callback);
                     };
