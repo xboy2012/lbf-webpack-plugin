@@ -24,8 +24,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 /**
  * @description   LBF template plugin
  */
@@ -45,11 +43,6 @@ lbfTemplatePlugin.prototype.apply = function (compilation) {
         externals = chunk.getModules().filter(function (module) {
             return module.external;
         });
-
-        // no externals
-        if (!externals.length) {
-            return new _ConcatSource2.default("LBF.define(", name, ", function(require, exports, module) { module.exports = ", source, "});");
-        }
 
         externalsDepsArray = [];
         var _iteratorNormalCompletion = true;
@@ -81,7 +74,7 @@ lbfTemplatePlugin.prototype.apply = function (compilation) {
             }
         }
 
-        return new (Function.prototype.bind.apply(_ConcatSource2.default, [null].concat(["LBF.define(", JSON.stringify(name), ', [\n     "'], _toConsumableArray(externalsDepsArray.join('",\n     "')), ['"\n]', ", function(require, exports, module){\n", "     module.exports = (function(obj) { return obj && obj.__esModule ? obj.default : obj; })(\n", source, "     );\n", "})"])))();
+        return new _ConcatSource2.default("LBF.define(", JSON.stringify(name), ', ', JSON.stringify(externalsDepsArray), ", function(require, exports, module){\n", "     module.exports = (function(obj) { return obj && obj.__esModule ? obj.default : obj; })(\n", source, "     );\n", "})");
     }.bind(this));
 
     mainTemplate.plugin("global-hash-paths", function (paths) {

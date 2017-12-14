@@ -23,16 +23,6 @@ lbfTemplatePlugin.prototype.apply = function(compilation) {
             return module.external;
         });
 
-        // no externals
-        if (!externals.length) {
-            return new ConcatSource(
-                "LBF.define(", name,
-                ", function(require, exports, module) { module.exports = ",
-                source,
-                "});"
-            );
-        }
-
         externalsDepsArray = [];
         for(let module of externals) {
             //外部全局变量忽略掉
@@ -44,7 +34,7 @@ lbfTemplatePlugin.prototype.apply = function(compilation) {
 
         return new ConcatSource(
             "LBF.define(", JSON.stringify(name),
-            ', [\n     "', ...externalsDepsArray.join('",\n     "'), '"\n]',
+            ', ', JSON.stringify(externalsDepsArray),
             ", function(require, exports, module){\n",
             "     module.exports = (function(obj) { return obj && obj.__esModule ? obj.default : obj; })(\n",
             source,

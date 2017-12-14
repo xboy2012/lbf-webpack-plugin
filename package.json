@@ -1,6 +1,6 @@
 {
   "name": "lbf-webpack-plugin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "bundle your files into LBF Module format.",
   "main": "dist/index.es5.js",
   "module": "dist/index.es6.js",
