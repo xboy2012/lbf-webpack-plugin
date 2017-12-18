@@ -74,6 +74,10 @@ lbfTemplatePlugin.prototype.apply = function (compilation) {
             }
         }
 
+        if (!externalsDepsArray.length) {
+            console.warn('You are not using any LBF modules, consider use standard webpack build and remove this plugin.');
+        }
+
         return new _ConcatSource2.default("LBF.define(", JSON.stringify(name), ', ', JSON.stringify(externalsDepsArray), ", function(require, exports, module){\n", "     module.exports = (function(obj) { return obj && obj.__esModule ? obj.default : obj; })(\n", source, "     );\n", "})");
     }.bind(this));
 

@@ -29,6 +29,10 @@ lbfTemplatePlugin.prototype.apply = function(compilation) {
             externalsDepsArray.push(module.request);
         }
 
+        if(!externalsDepsArray.length) {
+            console.warn('You are not using any LBF modules, consider use standard webpack build and remove this plugin.');
+        }
+
         return new ConcatSource(
             "LBF.define(", JSON.stringify(name),
             ', ', JSON.stringify(externalsDepsArray),
